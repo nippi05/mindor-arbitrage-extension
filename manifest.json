@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "Mindor Arbitrage",
+    "version": "0.1",
+  
+    "description": "Fetches information from bet365 and puts it into a .csv spreadsheet for import usage in excel.",
+  
+    "content_scripts": [
+      {
+        "matches": ["*://*.bet365.com/*"],
+        "js": ["scraper.js"]
+      }
+    ]
+  }
+  
