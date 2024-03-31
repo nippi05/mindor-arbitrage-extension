@@ -1,28 +1,31 @@
 {
-    "manifest_version": 2,
-    "name": "Mindor Arbitrage",
-    "version": "0.1",
-  
-    "description": "Fetches information from bet365 and puts it into a .csv spreadsheet for import usage in excel.",
-    "homepage_url": "https://github.com/sackidude/mindor-arbitrage-extension",
 
-    "permissions": ["activeTab"],
+  "description": "Adds a browser action icon to the toolbar. Click the button to choose a beast. The active tab's body content is then replaced with a picture of the chosen beast. See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Examples#beastify",
+  "manifest_version": 2,
+  "name": "Beastify",
+  "version": "1.0",
+  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+  "icons": {
+    "48": "icons/beasts-48.png"
+  },
 
-    "icons": {
-      "32": "icons/logo.png"
-    },
+  "permissions": [
+    "activeTab"
+  ],
 
-    "browser_action": {
-      "default_icon": "icons/logo.png",
-      "default_title": "Scrape",
-      "default_popup": "popup/scraper.html"
-    },
-  
-    "content_scripts": [
-      {
-        "matches": ["*://*.bet365.com/*", "*://www.unibet.com/betting/sports/event/*"],
-        "js": ["scraper.js"]
-      }
-    ]
-  }
-  
+  "browser_action": {
+    "default_icon": "icons/beasts-32.png",
+    "theme_icons": [{
+        "light": "icons/beasts-32-light.png",
+        "dark": "icons/beasts-32.png",
+        "size": 32
+    }],
+    "default_title": "Beastify",
+    "default_popup": "popup/choose_beast.html"
+  },
+
+  "web_accessible_resources": [
+    "beasts/*.jpg"
+  ]
+
+}
