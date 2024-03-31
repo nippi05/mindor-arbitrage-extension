@@ -1,4 +1,5 @@
 (function () {
+  console.log("Executing beastify.js");
   /**
    * Check and set a global guard variable.
    * If this content script is injected into the same page again,
@@ -38,6 +39,7 @@
    * Call "beastify()" or "reset()".
    */
   browser.runtime.onMessage.addListener((message) => {
+    console.log("Received message: ", message);
     if (message.command === "beastify") {
       insertBeast(message.beastURL);
     } else if (message.command === "reset") {
