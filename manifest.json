@@ -4,10 +4,23 @@
     "version": "0.1",
   
     "description": "Fetches information from bet365 and puts it into a .csv spreadsheet for import usage in excel.",
+    "homepage_url": "https://github.com/sackidude/mindor-arbitrage-extension",
+
+    "permissions": ["activeTab"],
+
+    "icons": {
+      "32": "icons/logo.png"
+    },
+
+    "browser_action": {
+      "default_icon": "icons/logo.png",
+      "default_title": "Scrape",
+      "default_popup": "popup/scraper.html"
+    },
   
     "content_scripts": [
       {
-        "matches": ["*://*.bet365.com/*"],
+        "matches": ["*://*.bet365.com/*", "*://www.unibet.com/betting/sports/event/*"],
         "js": ["scraper.js"]
       }
     ]
