@@ -14,8 +14,10 @@
     console.log("Fetching bet365");
     try {
       const test = document.getElementsByClassName(
-        "seh-ExclusionWrapper_ExclusionText"
+        "srb-ParticipantResponsiveText_Odds"
       )[0].innerHTML;
+
+      document.body.innerHTML = test; // This will be csv
       console.log(test);
     } catch (error) {
       console.error("Invalid page");
