@@ -11,10 +11,9 @@ function listenForClicks() {
      */
     function beastify(tabs) {
       browser.tabs.insertCSS({ code: "" }).then(() => {
-        const url = e.target.textContent;
+        const message = e.target.textContent;
         browser.tabs.sendMessage(tabs[0].id, {
-          command: "beastify",
-          beastURL: url,
+          command: message,
         });
       });
     }
@@ -23,7 +22,7 @@ function listenForClicks() {
      * Just log the error to the console.
      */
     function reportError(error) {
-      console.error(`Could not beastify: ${error}`);
+      console.error(`Could not scrape: ${error}`);
     }
 
     /**
@@ -49,7 +48,7 @@ function listenForClicks() {
 function reportExecuteScriptError(error) {
   document.querySelector("#popup-content").classList.add("hidden");
   document.querySelector("#error-content").classList.remove("hidden");
-  console.error(`Failed to execute beastify content script: ${error.message}`);
+  console.error(`Failed to execute scraper content script: ${error.message}`);
 }
 
 /**

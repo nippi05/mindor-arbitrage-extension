@@ -1,5 +1,5 @@
 (function () {
-  console.log("Executing beastify.js");
+  console.log("Executing scraper_content.js");
   /**
    * Check and set a global guard variable.
    * If this content script is injected into the same page again,
@@ -10,40 +10,43 @@
   }
   window.hasRun = true;
 
-  /**
-   * Given a URL to a beast image, remove all existing beasts, then
-   * create and style an IMG node pointing to
-   * that image, then insert the node into the document.
-   */
-  function insertBeast(beastURL) {
-    removeExistingBeasts();
-    let beastImage = document.createElement("img");
-    beastImage.setAttribute("src", beastURL);
-    beastImage.style.height = "100vh";
-    beastImage.className = "beastify-image";
-    document.body.appendChild(beastImage);
+  function bet365() {
+    try {
+      const test = document.getElementsByClassName(
+        "seh-ExclusionWrapper_ExclusionText"
+      )[0].innerHTML;
+      console.log(test);
+    } catch (error) {
+      console.error("Invalid page");
+    }
   }
 
-  /**
-   * Remove every beast from the page.
-   */
-  function removeExistingBeasts() {
-    let existingBeasts = document.querySelectorAll(".beastify-image");
-    for (let beast of existingBeasts) {
-      beast.remove();
+  function unibet() {
+    try {
+      const test = document.getElementsByClassName(
+        "seh-ExclusionWrapper_ExclusionText"
+      )[0].innerHTML;
+      console.log(test);
+    } catch (error) {
+      console.error("Invalid page");
     }
   }
 
   /**
    * Listen for messages from the background script.
-   * Call "beastify()" or "reset()".
+   * Call "bet365()" or "unibet()".
    */
   browser.runtime.onMessage.addListener((message) => {
-    console.log("Received message: ", message);
-    if (message.command === "beastify") {
-      insertBeast(message.beastURL);
-    } else if (message.command === "reset") {
-      removeExistingBeasts();
+    switch (message.command) {
+      case "Bet365":
+        bet365();
+        break;
+      case "Unibet":
+        unibet();
+        break;
+      default:
+        console.error("Invalid message from background script");
+        break;
     }
   });
 })();
