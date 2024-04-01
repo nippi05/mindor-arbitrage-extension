@@ -9,7 +9,7 @@ function listenForClicks() {
      * then get the beast URL and
      * send a "beastify" message to the content script in the active tab.
      */
-    function beastify(tabs) {
+    function message(tabs) {
       browser.tabs.insertCSS({ code: "" }).then(() => {
         const message = e.target.textContent;
         browser.tabs.sendMessage(tabs[0].id, {
@@ -27,16 +27,16 @@ function listenForClicks() {
 
     /**
      * Get the active tab,
-     * then call "beastify()" or "reset()" as appropriate.
+     * then call "message()".
      */
     if (e.target.tagName !== "BUTTON") {
-      // Ignore when click is not on a button within <div id="popup-content">.
+      // Ignore when click is not on a button.
       return;
     }
 
     browser.tabs
       .query({ active: true, currentWindow: true })
-      .then(beastify)
+      .then(message)
       .catch(reportError);
   });
 }
