@@ -11,6 +11,7 @@
   window.hasRun = true;
 
   function bet365() {
+    console.log("Fetching bet365");
     try {
       const test = document.getElementsByClassName(
         "seh-ExclusionWrapper_ExclusionText"
@@ -22,6 +23,7 @@
   }
 
   function unibet() {
+    console.log("Fetching unibet");
     try {
       const test = document.getElementsByClassName(
         "seh-ExclusionWrapper_ExclusionText"
