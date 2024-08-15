@@ -14,36 +14,33 @@
   browser.runtime.onMessage.addListener((message) => {
     console.info("Scraping...");
 
-    if (message != "scrape") {
-      console.error("Invalid message");
-      return;
-    }
-    const url = new URL(document.URL);
-    if (url.hostname != "www.bet365.com") {
-      console.error("Invalid page");
-      throw new Error("Wrong page");
-    }
-
     try {
-      const navButtons = document.getElementsByClassName(
-        "sph-MarketGroupNavBarButton_Content"
-      );
-      console.assert(navButtons.length == 2) // The least number of categories needed.
+      const command = message.command;
+      if (command != "scrape") {
+        throw new Error("Invalid message: " + command);
+      }
+      const url = new URL(document.URL);
+      if (url.hostname != "www.bet365.com") {
+        throw new Error("Wrong page: " + url.hostname);
+      }
+
+      const NAV_BUTTON_CLASS = "sph-MarketGroupNavBarButton_Content"
+      const navButtons = document.getElementsByClassName(NAV_BUTTON_CLASS);
+      const MIN_NAV_BUTTON_COUNT = 3;
+      if (navButtons.length <= MIN_NAV_BUTTON_COUNT) {
+        throw new Error(`Navigation bar of length ${navButtons.length} while minimum length is ${MIN_NAV_BUTTON_COUNT}`);
+      }
 
       const [leftTeam, rightTeam] = getTeamNames();
 
-      navButtons[0].click();
-      fetchPopular(data, leftTeam, rightTeam);
-
-      navButtons[1].click(); // Bet builder
-      fetchBetBuilder(data, leftTeam, rightTeam);
-
-      navButtons[2].click(); // Asian
-      fetchAsian(data, leftTeam, rightTeam);
+      scrapePopular(data, leftTeam, rightTeam, navButtons);
+      scrapeBetBuilder(data, leftTeam, rightTeam, navButtons);
+      scrapeAsian(data, leftTeam, rightTeam, navButtons);
 
       saveAndShowData(data);
+
     } catch (error) {
-      console.error("Possibly invalid page: " + error);
+      console.error(error);
     }
   });
 })();
@@ -58,10 +55,33 @@ function getTeamNames() {
   return [leftTeam, rightTeam];
 }
 
-function fetchPopular(data, leftTeam, rightTeam) {
-  let fulltimeDoubleChance = document.getElementsByClassName(
+function checkButtonLabel(navButtons, index, expectedLabel) {
+  const button = navButtons[index];
+  if (typeof button === 'undefined') {
+    throw new Error(`Button "${expectedLabel} "is not defined at index ${index}`);
+  }
+  const buttonLabel = navButtons[index].innerHTML.trim();
+  if (buttonLabel != expectedLabel) {
+    throw new Error(`First tab button "${buttonLabel}" is not "${expectedLabel}"`);
+  }
+}
+function sleep(sleepDuration) {
+  var now = new Date().getTime();
+  while (new Date().getTime() < now + sleepDuration) {
+    /* Do nothing */
+  }
+}
+function scrapePopular(data, leftTeam, rightTeam, navButtons) {
+  const POPULAR_INDEX = 0;
+  checkButtonLabel(navButtons, POPULAR_INDEX, "Populära")
+  navButtons[POPULAR_INDEX].click();
+  sleep(100) // NOTE: This sucks LOL
+
+
+  const fulltimeDoubleChance = document.getElementsByClassName(
     "srb-ParticipantResponsiveText_Odds"
   );
+  console.debug(fulltimeDoubleChance);
   data.set("Fulltid > 1", fulltimeDoubleChance[0].innerHTML);
   data.set("Fulltid > X", fulltimeDoubleChance[1].innerHTML);
   data.set("Fulltid > 2", fulltimeDoubleChance[2].innerHTML);
@@ -93,11 +113,21 @@ function fetchPopular(data, leftTeam, rightTeam) {
   data.set("Oavgjort och båda lagen gör mål > Nej", overUnder[8].innerHTML);
 }
 
-function fetchBetBuilder(data, leftTeam, rightTeam) {
+function scrapeBetBuilder(data, leftTeam, rightTeam, navButtons) {
+  const BET_BUILDER_INDEX = 1;
+  checkButtonLabel(navButtons, BET_BUILDER_INDEX, "Bet Builder")
+  navButtons[BET_BUILDER_INDEX].click();
+  sleep(100); // NOTE: This sucks LOL
+
 
 }
 
-function fetchAsian(data, leftTeam, rightTeam) {
+function scrapeAsian(data, leftTeam, rightTeam, navButtons) {
+  const ASIAN_INDEX = 2;
+  checkButtonLabel(navButtons, ASIAN_INDEX, "Asian")
+  navButtons[ASIAN_INDEX].click();
+  sleep(100); // NOTE: This sucks LOL
+
 
 }
 
