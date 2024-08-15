@@ -32,7 +32,7 @@
 
       const [leftTeam, rightTeam] = getTeamNames();
 
-      // Currently on popular tab
+      navButtons[0].click();
       fetchPopular(data, leftTeam, rightTeam);
 
       navButtons[1].click(); // Bet builder
