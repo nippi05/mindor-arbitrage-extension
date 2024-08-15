@@ -57,6 +57,6 @@ function reportExecuteScriptError(error) {
  * If we couldn't inject the script, handle the error.
  */
 browser.tabs
-  .executeScript({ file: "/content_scripts/scraper.js" })
+  .executeScript({ file: "/content_scripts/main.js" })
   .then(listenForClicks)
   .catch(reportExecuteScriptError);
