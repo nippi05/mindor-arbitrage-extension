@@ -45,6 +45,11 @@
   });
 })();
 
+/**
+ * Get the team names from the current page returned as a array of len to that can
+ * be used to deconstructor.
+ * @returns [string, string]
+ */
 function getTeamNames() {
   const leftTeam = document.getElementsByClassName(
     "sph-FixturePodHeader_TeamName"
@@ -55,22 +60,42 @@ function getTeamNames() {
   return [leftTeam, rightTeam];
 }
 
+/**
+ * Helper function to validate a button in collection is defined and named expectedly.
+ * @param {HTMLCollection<Element>} navButtons The array containing all of the buttons
+ * @param {number} index The index of the button to be verified.
+ * @param {string} expectedLabel The expected label of the button to be verified.
+ */
 function checkButtonLabel(navButtons, index, expectedLabel) {
   const button = navButtons[index];
   if (typeof button === 'undefined') {
-    throw new Error(`Button "${expectedLabel} "is not defined at index ${index}`);
+    throw new Error(`Button "${expectedLabel}" is not defined at index ${index}`);
   }
   const buttonLabel = navButtons[index].innerHTML.trim();
   if (buttonLabel != expectedLabel) {
     throw new Error(`First tab button "${buttonLabel}" is not "${expectedLabel}"`);
   }
 }
+/**
+ * Function to busy wait that isn't meant for production but just to avoid everything 
+ * becoming async.
+ * @param {number} sleepDuration Number of ms to wait
+ */
 function sleep(sleepDuration) {
   var now = new Date().getTime();
   while (new Date().getTime() < now + sleepDuration) {
     /* Do nothing */
   }
 }
+
+/**
+ * Scrape the "Populära" subsection of the betting area.
+ * @param {Map<string, string>} data Map containing all of the csv data entries.
+ * @param {string} leftTeam Name of the left team
+ * @param {string} rightTeam Name of the right team
+ * @param {HTMLCollection<Element>} navButtons The navigation buttons which can 
+ * be pressed to change the current view.
+ */
 function scrapePopular(data, leftTeam, rightTeam, navButtons) {
   const POPULAR_INDEX = 0;
   checkButtonLabel(navButtons, POPULAR_INDEX, "Populära")
@@ -81,7 +106,6 @@ function scrapePopular(data, leftTeam, rightTeam, navButtons) {
   const fulltimeDoubleChance = document.getElementsByClassName(
     "srb-ParticipantResponsiveText_Odds"
   );
-  console.debug(fulltimeDoubleChance);
   data.set("Fulltid > 1", fulltimeDoubleChance[0].innerHTML);
   data.set("Fulltid > X", fulltimeDoubleChance[1].innerHTML);
   data.set("Fulltid > 2", fulltimeDoubleChance[2].innerHTML);
@@ -113,6 +137,14 @@ function scrapePopular(data, leftTeam, rightTeam, navButtons) {
   data.set("Oavgjort och båda lagen gör mål > Nej", overUnder[8].innerHTML);
 }
 
+/**
+ * Scrape the "Bet Builder" subsection of the betting area.
+ * @param {Map<string, string>} data Map containing all of the csv data entries.
+ * @param {string} leftTeam Name of the left team
+ * @param {string} rightTeam Name of the right team
+ * @param {HTMLCollection<Element>} navButtons The navigation buttons which can 
+ * be pressed to change the current view.
+ */
 function scrapeBetBuilder(data, leftTeam, rightTeam, navButtons) {
   const BET_BUILDER_INDEX = 1;
   checkButtonLabel(navButtons, BET_BUILDER_INDEX, "Bet Builder")
@@ -122,15 +154,27 @@ function scrapeBetBuilder(data, leftTeam, rightTeam, navButtons) {
 
 }
 
+/**
+ * Scrape the "Asian" subsection of the betting area.
+ * @param {Map<string, string>} data Map containing all of the csv data entries.
+ * @param {string} leftTeam Name of the left team
+ * @param {string} rightTeam Name of the right team
+ * @param {HTMLCollection<Element>} navButtons The navigation buttons which can 
+ * be pressed to change the current view.
+ */
 function scrapeAsian(data, leftTeam, rightTeam, navButtons) {
   const ASIAN_INDEX = 2;
   checkButtonLabel(navButtons, ASIAN_INDEX, "Asian")
   navButtons[ASIAN_INDEX].click();
   sleep(100); // NOTE: This sucks LOL
 
-
+  selectMarketGroup("Totalt antal skott");
 }
 
+/**
+ * Saves and displays the data in the HTML body.
+ * @param {Map<string, string>} data Data to be saved
+ */
 function saveAndShowData(data) {
   document.body.innerHTML = "Erbjudande\tBet365\n";
   let sorted = new Map([...data.entries()].sort());
@@ -142,10 +186,16 @@ function saveAndShowData(data) {
   console.debug(data);
 }
 
+// TODO: This function could be written so as not to be of time complexity O(n^2) 
+// which it currently is.
+/**
+ * Fetches a market group from the currently open subsection.
+ * @param {string} name Name of the market group of interest
+ * @returns HTMLElement
+ */
 function selectMarketGroup(name) {
   // Select all divs with class bbw-BetBuilderEmbeddedMarketGroup
-  const divs = document.querySelectorAll('div.bbw-BetBuilderEmbeddedMarketGroup');
-
+  const divs = document.querySelectorAll('div.bbw-BetBuilderEmbeddedMarketGroup.gl-MarketGroup');
   // Loop through each div and check the condition
   let targetDiv = null;
   divs.forEach(div => {
