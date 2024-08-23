@@ -33,9 +33,9 @@
 
       const [leftTeam, rightTeam] = getTeamNames();
 
-      scrapePopular(data, leftTeam, rightTeam, navButtons);
+      // scrapePopular(data, leftTeam, rightTeam, navButtons);
       scrapeBetBuilder(data, leftTeam, rightTeam, navButtons);
-      scrapeAsian(data, leftTeam, rightTeam, navButtons);
+      // scrapeAsian(data, leftTeam, rightTeam, navButtons);
 
       saveAndShowData(data);
 
@@ -99,7 +99,7 @@ function sleep(sleepDuration) {
 function scrapePopular(data, leftTeam, rightTeam, navButtons) {
   const POPULAR_INDEX = 0;
   checkButtonLabel(navButtons, POPULAR_INDEX, "Populära")
-  navButtons[POPULAR_INDEX].click();
+  // navButtons[POPULAR_INDEX].click();
   sleep(100) // NOTE: This sucks LOL
 
 
